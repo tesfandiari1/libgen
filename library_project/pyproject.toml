@@ -1,0 +1,25 @@
+[project]
+name = "library-project"
+version = "0.1.0"
+description = "LibGen paper downloader with concurrent support"
+readme = "README.md"
+requires-python = ">=3.13"
+# Fixed [HIGH-001]: Sync dependencies with requirements.txt
+dependencies = [
+    "libgen-api>=1.0.0",
+    "streamlit>=1.28.0",
+    "stqdm>=0.0.5",
+    "httpx>=0.25.0",
+    "tqdm>=4.66.0",
+    "fake-useragent>=1.4.0",
+    "beautifulsoup4>=4.12.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.0.0",
+    "mypy>=1.5.0",
+    "ruff>=0.1.0",
+]
