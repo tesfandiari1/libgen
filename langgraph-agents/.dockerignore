@@ -1,0 +1,96 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info
+dist
+build
+eggs
+.eggs
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.python-version
+
+# Testing
+.tox
+.coverage
+.coverage.*
+.cache
+.pytest_cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis
+htmlcov/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# IDEs
+.idea
+.vscode
+*.swp
+*.swo
+*.swn
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+docker-compose.sh
+
+# Setup scripts (not needed in container)
+setup.sh
+setup.bat
+Makefile
+SETUP_COMPLETE.md
+
+# Development
+.ruff_cache
+.mypy_cache
+.black
+
+# Logs
+*.log
+logs/
+
+# Local data
+data/
+tmp/
+temp/
+
+# UV/package manager
+uv.lock
+.uv/
+
+# Node (if any frontend added later)
+node_modules/
+npm-debug.log
+yarn-error.log

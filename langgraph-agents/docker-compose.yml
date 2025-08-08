@@ -1,0 +1,17 @@
+services:
+  agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: langgraph-agent
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      # Mount source code for development
+      - ./src:/app/src:ro
+      - ./examples:/app/examples:ro
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
