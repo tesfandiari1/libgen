@@ -1,7 +1,0 @@
-libgen-api
-streamlit
-stqdm
-httpx
-tqdm
-fake-useragent
-beautifulsoup4
