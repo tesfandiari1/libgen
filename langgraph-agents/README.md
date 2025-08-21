@@ -35,35 +35,26 @@ docker compose exec agent python examples/with_memory.py
 docker compose exec agent python examples/structured_output.py
 ```
 
-### Anna's Archive: CLI Search Workflow
+### Using the Streamlit UI
 
-The CLI is exposed as `anna-agent`.
-
-```bash
-# Search and save results to SQLite
-docker compose exec agent anna-agent search "Python programming" --limit 25
-
-# List saved books (most recent first)
-docker compose exec agent anna-agent list --limit 20
-
-# Export all saved books to CSV
-docker compose exec agent anna-agent export /app/data/books.csv
-```
-
-You can also run the LangGraph-powered agent to parse intent, search, rank, and optionally save:
+The Streamlit UI provides all book discovery and management features:
 
 ```bash
-docker compose exec agent anna-agent agent "Find Python programming books 2020+ pdf" --save
+# Start the UI service
+docker compose up -d --build ui
+
+# Open in browser
+open http://localhost:8501
 ```
 
-### CLI Commands
+Features available in the UI:
 
-```text
-anna-agent search "<query>" [--limit|-n <int>]   # Search Anna's Archive and persist results
-anna-agent list [--limit|-n <int>]                # List saved books
-anna-agent export <path.csv>                      # Export saved books to CSV
-anna-agent agent "<query>" [--save]              # Run the discovery agent
-```
+- AI Agent Search: Natural language book discovery using LangGraph
+- Direct Search: Search with specific parameters (year, format, etc.)
+- Saved Books: Browse and manage your book collection
+- Export: Export your collection to CSV or JSON
+
+The UI replaces all CLI functionality with an intuitive web interface.
 
 ### Interactive Development
 

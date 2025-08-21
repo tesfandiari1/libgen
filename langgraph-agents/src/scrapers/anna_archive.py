@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import re
 from typing import Iterable, Optional
+import logging
 
 from .base_scraper import BaseHttpClient
 from .html_parser import HTMLParser
@@ -19,20 +20,26 @@ class AnnaArchiveScraper:
         self._client = http_client or BaseHttpClient()
 
     async def search(self, intent: SearchIntent) -> list[dict]:
+        log = logging.getLogger(self.__class__.__name__)
         results: list[dict] = []
         page = 1
         max_pages = max(1, min(10, (intent.max_results // 25) + 3))
         while len(results) < intent.max_results and page <= max_pages:
             url = self._compose_search_url(intent.query, page)
             try:
+                log.info("scrape page=%d url=%s", page, url)
                 html = await self._client.get(url)
-            except Exception:
-                break
+            except Exception as e:
+                log.warning("scrape error on page=%d: %s", page, e)
+                # Continue to next page in case of transient error
+                page += 1
+                continue
             page_books = self._parse_results_bs(HTMLParser(html))
             page_books = self._filter_results(page_books, intent)
             results.extend([b.model_dump() for b in page_books])
             page += 1
             await asyncio.sleep(0)
+        log.info("scrape complete total=%d (limit=%d)", len(results), intent.max_results)
         return results[: intent.max_results]
 
     def _compose_search_url(self, query: str, page: int) -> str:

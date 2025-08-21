@@ -13,33 +13,33 @@ def get_weather(city: str) -> str:
 def create_memory_agent():
     """Create an agent with conversation memory."""
     model = ChatAnthropic(
-        model="claude-3-haiku-20240307",
-        temperature=0,
-        api_key=os.getenv("ANTHROPIC_API_KEY")
+        model=os.getenv("DEFAULT_MODEL", "claude-opus-4-1-20250805"),
+        temperature=float(os.getenv("DEFAULT_TEMPERATURE", "0")),
+        api_key=os.getenv("ANTHROPIC_API_KEY"),
     )
-    
+
     # Create checkpointer for memory
     checkpointer = MemorySaver()
-    
+
     agent = create_react_agent(
         model=model,
         tools=[get_weather],
         checkpointer=checkpointer
     )
-    
+
     return agent
 
 if __name__ == "__main__":
     agent = create_memory_agent()
     config = {"configurable": {"thread_id": "conversation_1"}}
-    
+
     # First message
     response1 = agent.invoke(
         {"messages": [{"role": "user", "content": "What's the weather in SF?"}]},
         config
     )
     print("Response 1:", response1['messages'][-1].content)
-    
+
     # Follow-up message (agent should remember context)
     response2 = agent.invoke(
         {"messages": [{"role": "user", "content": "What about New York?"}]},

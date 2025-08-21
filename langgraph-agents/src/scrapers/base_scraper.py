@@ -3,6 +3,7 @@ import random
 import time
 
 import httpx
+import logging
 from tenacity import retry, stop_after_attempt, wait_random_exponential, retry_if_exception_type
 
 
@@ -29,6 +30,7 @@ class BaseHttpClient:
         timeout_seconds: float = 20.0,
         user_agents: list[str] | None = None,
     ) -> None:
+        self._log = logging.getLogger(self.__class__.__name__)
         self._last_request_ts: float = 0.0
         self._interval = max(1.0, float(request_interval_seconds))
         self._timeout = httpx.Timeout(timeout_seconds)
@@ -44,6 +46,7 @@ class BaseHttpClient:
         elapsed = now - self._last_request_ts
         sleep_for = self._interval - elapsed
         if sleep_for > 0:
+            self._log.debug("rate-limit sleep %.2fs", sleep_for)
             await asyncio.sleep(sleep_for)
 
     def _merge_headers(self, headers: dict[str, str] | None) -> dict[str, str]:
@@ -61,12 +64,21 @@ class BaseHttpClient:
     )
     async def get(self, url: str, headers: dict[str, str] | None = None) -> str:
         await self._respect_rate_limit()
-        response = await self._client.get(url, headers=self._merge_headers(headers))
+        merged_headers = self._merge_headers(headers)
+        self._log.info("GET %s", url)
+        response = await self._client.get(url, headers=merged_headers)
         self._last_request_ts = time.monotonic()
         response.raise_for_status()
+        self._log.debug("%s -> %s (%d bytes)", url, response.status_code, len(response.text))
         return response.text
 
     async def close(self) -> None:
         await self._client.aclose()
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb):
+        await self.close()
 
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+import os
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -13,7 +14,9 @@ class Database:
         base_dir = Path(__file__).resolve().parents[2]
         data_dir = base_dir / "data"
         data_dir.mkdir(parents=True, exist_ok=True)
-        self.db_file = Path(db_path) if db_path else data_dir / "books.db"
+        env_path = os.getenv("DATABASE_PATH")
+        resolved = Path(env_path) if env_path else None
+        self.db_file = Path(db_path) if db_path else (resolved or data_dir / "books.db")
         self.engine = create_engine(f"sqlite:///{self.db_file}", future=True, connect_args={"check_same_thread": False})
         self.metadata = MetaData()
         self.books = Table(

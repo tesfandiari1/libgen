@@ -20,32 +20,32 @@ def get_weather(city: str) -> str:
 def create_structured_agent():
     """Create an agent that returns structured responses."""
     model = ChatAnthropic(
-        model="claude-3-haiku-20240307",
-        temperature=0,
-        api_key=os.getenv("ANTHROPIC_API_KEY")
+        model=os.getenv("DEFAULT_MODEL", "claude-opus-4-1-20250805"),
+        temperature=float(os.getenv("DEFAULT_TEMPERATURE", "0")),
+        api_key=os.getenv("ANTHROPIC_API_KEY"),
     )
-    
+
     # For structured output, we'll use the model's with_structured_output method
     structured_model = model.with_structured_output(WeatherResponse)
-    
+
     agent = create_react_agent(
         model=model,
         tools=[get_weather]
     )
-    
+
     return agent, structured_model
 
 if __name__ == "__main__":
     agent, structured_model = create_structured_agent()
-    
+
     # Get agent response
     response = agent.invoke(
         {"messages": [{"role": "user", "content": "What's the weather in Paris? Please provide a detailed report."}]}
     )
-    
+
     # Parse to structured format
     last_message = response['messages'][-1].content
-    
+
     # For demonstration, create a structured response
     try:
         structured_response = structured_model.invoke(

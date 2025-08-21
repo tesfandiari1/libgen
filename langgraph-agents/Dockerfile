@@ -18,9 +18,8 @@ COPY requirements.txt ./
 COPY ui/ ./ui/
 
 ## Install pinned dependencies from lockfile (includes editable install)
-COPY requirements.lock ./
-RUN pip install --no-cache-dir -r requirements.lock && \
-    pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Create a simple entrypoint script that keeps the container running
 RUN echo '#!/bin/bash\n\

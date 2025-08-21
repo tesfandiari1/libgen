@@ -10,7 +10,6 @@ dependencies = [
     "langchain-anthropic>=0.3.18",
     "python-dotenv>=1.1.1",
     "pydantic>=2.11.7",
-    "typer>=0.16.0",
     "sqlalchemy>=2.0.42",
     "pandas>=2.3.1",
     "httpx>=0.28.1",
@@ -28,8 +27,7 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
 
-[project.scripts]
-anna-agent = "src.cli.app:main"
+
 
 [tool.uv]
 dev-dependencies = [
