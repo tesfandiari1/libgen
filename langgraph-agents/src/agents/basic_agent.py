@@ -14,17 +14,17 @@ def create_basic_agent():
     """Create a basic ReAct agent with weather tool."""
     # Initialize the model with specific parameters
     model = ChatAnthropic(
-        model="claude-3-haiku-20240307",  # Using Haiku for cost efficiency
-        temperature=0,
-        api_key=os.getenv("ANTHROPIC_API_KEY")
+        model=os.getenv("DEFAULT_MODEL", "claude-opus-4-1-20250805"),
+        temperature=float(os.getenv("DEFAULT_TEMPERATURE", "0")),
+        api_key=os.getenv("ANTHROPIC_API_KEY"),
     )
-    
+
     # Create the agent
     agent = create_react_agent(
         model=model,
         tools=[get_weather]
     )
-    
+
     return agent
 
 if __name__ == "__main__":

@@ -1,30 +1,30 @@
 import os
-from typing import Optional
 from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class Config:
-    """Configuration management for LangGraph agents."""
-    
-    # API Keys
+    """Configuration management for LangGraph agents. Minimal and explicit."""
+
+    # Required
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
-    
-    # Model Configuration
-    DEFAULT_MODEL: str = "claude-3-haiku-20240307"
-    DEFAULT_TEMPERATURE: float = 0.0
-    
-    # Agent Configuration
-    DEFAULT_MAX_ITERATIONS: int = 10
-    DEFAULT_TIMEOUT: int = 30
-    
+
+    # Optional: used by integration test to choose export path
+    INTEGRATION_EXPORT_PATH: str = os.getenv(
+        "INTEGRATION_EXPORT_PATH", "/app/data/integration_export.csv"
+    )
+
     @classmethod
     def validate(cls) -> bool:
-        """Validate required configuration."""
+        """Validate required configuration without raising to keep DX smooth."""
         if not cls.ANTHROPIC_API_KEY:
-            print("Warning: ANTHROPIC_API_KEY is not set. Please set it in your .env file.")
+            print(
+                "Warning: ANTHROPIC_API_KEY is not set. Please set it in your .env file."
+            )
             return False
         return True
 
-# Validate on import (but don't raise error to allow setup)
+
+# Validate on import (non-fatal)
 Config.validate()

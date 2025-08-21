@@ -8,10 +8,33 @@ services:
       - .env
     environment:
       - PYTHONUNBUFFERED=1
+    # No HTTP server exposed; remove ports to avoid confusion
     volumes:
       # Mount source code for development
       - ./src:/app/src:ro
       - ./examples:/app/examples:ro
+      - ./tests:/app/tests:ro
+      # Persist SQLite database on host
+      - ./data:/app/data
     restart: unless-stopped
     stdin_open: true
     tty: true
+
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: langgraph-ui
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./src:/app/src:ro
+      - ./ui:/app/ui:ro
+      - ./data:/app/data
+    depends_on:
+      - agent
+    command: bash -lc "streamlit run ui/app.py --server.port=8501 --server.address=0.0.0.0"

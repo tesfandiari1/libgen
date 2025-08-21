@@ -14,6 +14,13 @@ help:
 	@echo "  make logs     - Show container logs"
 	@echo "  make status   - Show container status"
 	@echo "  make clean    - Stop containers and remove image"
+	@echo "  make ui       - Start Streamlit UI on :8501"
+	@echo ""
+	@echo "Quality targets:"
+	@echo "  make fmt      - Format code (ruff format)"
+	@echo "  make lint     - Lint code (ruff)"
+	@echo "  make type     - Type check (mypy)"
+	@echo "  make test     - Run tests (pytest)"
 
 # Docker commands
 up:
@@ -46,3 +53,19 @@ clean:
 
 # Quick restart
 restart: down up
+
+# Quality commands (run on host or in container as needed)
+fmt:
+	ruff format langgraph-agents/src langgraph-agents/tests langgraph-agents/examples
+
+lint:
+	ruff check langgraph-agents/src langgraph-agents/tests langgraph-agents/examples
+
+type:
+	mypy langgraph-agents/src
+
+test:
+	pytest -q langgraph-agents/tests
+
+ui:
+	docker compose up -d --build ui
